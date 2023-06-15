@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1686826497 source:c:\users\user\documents\dasprog\monster slayer\main.cpp
+	<stdio.h>
+	<stdlib.h>
+	<graphics.h>
+	<iostream>
+	<conio.h>
+	<MMSystem.h>
+

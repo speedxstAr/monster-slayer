@@ -1,0 +1,219 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <graphics.h>
+#include <iostream>
+#include <conio.h>
+#include <MMSystem.h>
+
+using namespace std;
+int delayWave=0;
+class mc
+{
+public:
+    int xo=50,yo=getmaxy()/2,ismoving=0;
+    void print()
+    {
+        //road
+        line(0,getmaxy()/2+200,1920,getmaxy()/2+200); //y=0
+        line(0,getmaxy()/2,1920,getmaxy()/2); //y=1
+        line(0,getmaxy()/2-200,1920,getmaxy()/2-200); //y=2
+        if (GetAsyncKeyState(VK_SPACE))
+        {
+            //head
+			circle(xo+15,yo-60,10);
+			//body
+			line(xo+15,yo-17,xo+15,yo-50);
+			//legs
+			line(xo,yo,xo+15,yo-17);
+			line(xo+15,yo-17,xo+28,yo);
+			//hand
+			line(xo+15,yo-45,xo+27,yo-23);
+			//sword
+			line(xo+20,yo-30,xo+105,yo+55);
+			line(xo+45,yo-30,xo+20,yo-5);
+			line(xo+20,yo-5,xo+75,yo+50);
+			line(xo+75,yo+50,xo+105,yo+55);
+			line(xo+45,yo-30,xo+100,yo+25);
+			line(xo+100,yo+25,xo+105,yo+55);
+        }
+        else
+        {
+            //head
+			circle(xo+15,yo-60,10);
+			//body
+			line(xo+15,yo-17,xo+15,yo-50);
+			//legs
+			line(xo,yo,xo+15,yo-17);
+			line(xo+15,yo-17,xo+28,yo);
+			//hand
+			line(xo+15,yo-45,xo+30,yo-30);
+			//sword
+			line(xo+20,yo-23,xo+110,yo-113);
+			line(xo+27,yo-48,xo+45,yo-30);
+			line(xo+45,yo-30,xo+105,yo-90);
+			line(xo+105,yo-90,xo+110,yo-113);
+			line(xo+27,yo-48,xo+87,yo-108);
+			line(xo+87,yo-108,xo+110,yo-113);
+        }
+    }
+    void gerak()
+    {
+        if(GetAsyncKeyState(VK_UP))
+        {
+            if(ismoving==0)
+            {
+                yo=yo-200;
+                ismoving=1;
+                if (yo<=getmaxy()/2-200) yo=getmaxy()/2-200;
+            }
+        }
+        else if(GetAsyncKeyState(VK_DOWN))
+        {
+            if(ismoving==0)
+            {
+                yo=yo+200;
+                ismoving=1;
+                if (yo>=getmaxy()/2+200) yo=getmaxy()/2+200;
+            }
+        }
+        else ismoving=0;
+    }
+};
+
+class Wave
+{
+private:
+    int speed=3;
+public:
+    int xw,yw,cekWave,warna;
+    Wave()
+    {
+        xw=0;
+        yw=0;
+        cekWave=0;
+        warna=rand()%10;
+    }
+    int updateWave(int x,int y)
+    {
+        if((xw==0)&&(yw==0)&&(cekWave==1))
+        {
+            xw=x;
+            yw=y;
+        }
+        if(xw>getmaxx())
+        {
+            xw=0;
+            yw=0;
+            cekWave=0;
+        }
+        if(cekWave==1)
+        {
+            xw=xw+speed;
+            arc(30+xw,yw,-90,-270,10);
+            arc(30+xw,yw,-90,-270,20);
+        }
+    }
+    int controlWave(int x,int y)
+    {
+        if(delayWave==0)
+        {
+            if (GetAsyncKeyState(VK_SPACE))
+            {
+                cekWave=1;
+                if(xw==0&&yw==0)
+                {
+                    delayWave=5;
+                }
+            }
+        }
+        updateWave(x,y);
+    }
+};
+
+class Car
+{
+public:
+    int xm=getmaxx()-rand()%400,ym,v;
+    void printmobil()
+    {
+        ym=rand()%3;
+        if(ym==0)ym=getmaxy()/2+200;
+        else if(ym==1)ym=getmaxy()/2;
+        else if(ym==2)ym=getmaxy()/2-200;
+        //roda
+        circle(xm+50,ym-13,13); //kiri
+        circle(xm+120,ym-13,13); //kanan
+        //bodym
+        line(xm+20,ym-13,xm+150,ym-13);
+        line(xm+150,ym-13,xm+150,ym-40);
+        line(xm+20,ym-13,xm+20,ym-70);
+        line(xm+150,ym-40,xm+20,ym-40);
+        line(xm+120,ym-40,xm+110,ym-70);
+        line(xm+110,ym-70,xm+20,ym-70);
+        line(xm+67,ym-70,xm+67,ym-40);
+    }
+    void gerakmobil()
+    {
+        v=rand()%5;
+        xm=xm-v;
+        if(xm<-70)
+        {
+            xm=getmaxx()-rand()%400;
+        }
+    }
+    int hitbox(int xw, int yw)
+    {
+        if (xw > xm - 10 && xw < xm + 10 && yw > ym - 10 && yw < ym + 10)
+        {
+            xm=getmaxx();
+            ym=rand()%3;
+            if(ym==0)ym=getmaxy()/2+200;
+            else if(ym==1)ym=getmaxy()/2;
+            else if(ym==2)ym=getmaxy()/2-200;
+            return true;
+        }
+        return false;
+    }
+};
+
+int main()
+{
+    initwindow(1920,1080);
+    mc Guts;
+    Wave wave[100];
+    Car A[20];
+    while(1)
+    {
+        cleardevice();
+        Guts.gerak();
+        Guts.print();
+        for(int i=0;i<100;i++)
+        {
+            wave[i].controlWave(Guts.xo,Guts.yo);
+        }
+        if(delayWave!=0)
+        {
+            delayWave=delayWave-1;
+        }
+        for(int j=0;j<1;j++)
+        {
+            A[j].gerakmobil();
+            A[j].printmobil();
+
+            for(int i=0;i<100;i++)
+            {
+                if (wave[i].cekWave == 1)
+                {
+                    if (A[j].hitbox(wave[i].xw, wave[i].yw))
+                    {
+                        wave[i].cekWave = 0;
+                        wave[i].xw=0;
+                        wave[i].yw=0;
+                    }
+                }
+            }
+        }
+        delay(0);
+    }
+
+}
