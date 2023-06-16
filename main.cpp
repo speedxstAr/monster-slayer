@@ -7,7 +7,8 @@
 
 using namespace std;
 char score_str[0];
-int delayWave=0,score;
+int delayWave=0,score,darah;
+
 class mc
 {
 public:
@@ -124,7 +125,7 @@ public:
                 cekWave=1;
                 if(xw==0&&yw==0)
                 {
-                    delayWave=7;
+                    delayWave=10;
                 }
             }
         }
@@ -132,7 +133,7 @@ public:
     }
 };
 
-class Monster1
+class Monster1 //score=2
 {
 public:
     int xm1=getmaxx()-rand()%400,ym1=rand()%3,v;
@@ -141,7 +142,7 @@ public:
         if(ym1==0)ym1=getmaxy()/2+200;
         else if(ym1==1)ym1=getmaxy()/2;
         else if(ym1==2)ym1=getmaxy()/2-200;
-        setcolor(4);
+        setcolor(4); //red
         //monster 1
         line(xm1-60,ym1-10,xm1-40,ym1-10);
         line(xm1-40,ym1-10,xm1-40,ym1-30);
@@ -199,13 +200,14 @@ public:
             if(ym1==0)ym1=getmaxy()/2+200;
             else if(ym1==1)ym1=getmaxy()/2;
             else if(ym1==2)ym1=getmaxy()/2-200;
+            score=score+2;
             return true;
         }
         return false;
     }
 };
 
-class Monster2
+class Monster2 //score=1
 {
 public:
     int xm2=getmaxx()-rand()%400,ym2=rand()%3,v,xskor2,yskor2;
@@ -214,7 +216,7 @@ public:
         if(ym2==0)ym2=getmaxy()/2+200;
         else if(ym2==1)ym2=getmaxy()/2;
         else if(ym2==2)ym2=getmaxy()/2-200;
-        setcolor(2);
+        setcolor(2); //green
         //monster 2
         line(xm2-50,ym2-10,xm2-40,ym2-10);
         line(xm2-40,ym2-10,xm2-40,ym2-20);
@@ -275,6 +277,7 @@ public:
             if(ym2==0)ym2=getmaxy()/2+200;
             else if(ym2==1)ym2=getmaxy()/2;
             else if(ym2==2)ym2=getmaxy()/2-200;
+            score=score+1;
             return true;
         }
         return false;
@@ -301,7 +304,7 @@ int main()
 
     initwindow(maxX,maxY);
     mc Guts;
-    Wave wave[100];
+    Wave wave[1000];
     Monster1 A[10];
     Monster2 B[10];
     while(1)
@@ -313,7 +316,7 @@ int main()
         Guts.print();
         UI userinterface;
         userinterface.scoreboard();
-        for(int i=0;i<100;i++)
+        for(int i=0;i<1000;i++)
         {
             wave[i].controlWave(Guts.xo,Guts.yo);
         }
