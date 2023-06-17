@@ -122,12 +122,17 @@ public:
         {
             if (GetAsyncKeyState(VK_SPACE))
             {
-                cekWave=1;
-                if(xw==0&&yw==0)
+                if(isattacking==0)
                 {
-                    delayWave=10;
+                    cekWave=1;
+                    if(xw==0&&yw==0)
+                    {
+                        delayWave=10;
+                    }
+                    isattacking=1;
                 }
             }
+            else isattacking=0;
         }
         updateWave(x,y);
     }
@@ -268,7 +273,7 @@ public:
             xm2=getmaxx()-rand()%400;
         }
     }
-    int hitbox(int xw, int yw)
+    int hitbox(int xw,int yw)
     {
         if (xw>xm2-165&&xw<xm2+50&&yw>ym2-10&&yw<ym2+10)
         {
@@ -284,13 +289,21 @@ public:
     }
 };
 
-class UI
+class UserInterface
 {
     public:
+    void menu()
+    {
+        settextstyle(3,HORIZ_DIR,40);
+        settextjustify(1,1);
+        outtextxy(getmaxx()/2,getmaxy()/2,"Welcome to");
+        settextstyle(8,HORIZ_DIR,40);
+        outtextxy(getmaxx()/2,getmaxy()/2+50,"Berzerk");
+    }
     void scoreboard()
     {
         settextstyle(3,HORIZ_DIR,40);
-        settextjustify(3,1);
+        settextjustify(0,1);
         sprintf(score_str,"%d",score);
         outtextxy(100,50,score_str);
     }
@@ -301,21 +314,32 @@ int main()
     int page=0;
     DWORD maxX = GetSystemMetrics(SM_CXSCREEN);
     DWORD maxY = GetSystemMetrics(SM_CYSCREEN);
-
     initwindow(maxX,maxY);
     mc Guts;
     Wave wave[1000];
-    Monster1 A[10];
-    Monster2 B[10];
+    Monster1 A[4];
+    Monster2 B[9];
+    UserInterface UI;
     while(1)
     {
+        cleardevice();
+        UI.menu();
+        if(kbhit())
+        {
+            break;
+        }
+        delay(30);
+    }
+
+    while(1)
+    {
+
         setactivepage(page);
         setvisualpage(1-page);
         cleardevice();
         Guts.gerak();
         Guts.print();
-        UI userinterface;
-        userinterface.scoreboard();
+        UI.scoreboard();
         for(int i=0;i<1000;i++)
         {
             wave[i].controlWave(Guts.xo,Guts.yo);
@@ -328,7 +352,7 @@ int main()
         {
             A[j].gerakm1();
             A[j].printm1();
-            for(int i=0;i<15;i++)
+            for(int i=0;i<1000;i++)
             {
                 if (wave[i].cekWave == 1)
                 {
@@ -345,7 +369,7 @@ int main()
         {
             B[k].gerakm2();
             B[k].printm2();
-            for(int i=0;i<15;i++)
+            for(int i=0;i<1000;i++)
             {
                 if (wave[i].cekWave == 1)
                 {
