@@ -6,13 +6,13 @@
 #include <MMSystem.h>
 
 using namespace std;
-char score_str[0];
-int delayWave=0,score,darah;
+char score_str[0],hp_str[100];
+int delayWave=0,score=0,darah=100,xo=50;
 
 class mc
 {
 public:
-    int xo=50,yo=getmaxy()/2,ismoving=0;
+    int yo=getmaxy()/2,ismoving=0,isattacking=0;
     void print()
     {
         //road
@@ -21,6 +21,10 @@ public:
         line(0,getmaxy()/2-200,1920,getmaxy()/2-200); //y=2
         if (GetAsyncKeyState(VK_SPACE))
         {
+            if (isattacking==0)
+            {
+                isattacking=1;
+            }
             //head
             circle(xo+15,yo-60,10);
             //body
@@ -37,26 +41,26 @@ public:
             line(xo+75,yo+50,xo+105,yo+55);
             line(xo+45,yo-30,xo+100,yo+25);
             line(xo+100,yo+25,xo+105,yo+55);
-
         }
         else
         {
+            isattacking=0;
             //head
-			circle(xo+15,yo-60,10);
-			//body
-			line(xo+15,yo-17,xo+15,yo-50);
-			//legs
-			line(xo,yo,xo+15,yo-17);
-			line(xo+15,yo-17,xo+28,yo);
-			//hand
-			line(xo+15,yo-45,xo+30,yo-30);
-			//sword
-			line(xo+20,yo-23,xo+110,yo-113);
-			line(xo+27,yo-48,xo+45,yo-30);
-			line(xo+45,yo-30,xo+105,yo-90);
-			line(xo+105,yo-90,xo+110,yo-113);
-			line(xo+27,yo-48,xo+87,yo-108);
-			line(xo+87,yo-108,xo+110,yo-113);
+            circle(xo+15,yo-60,10);
+            //body
+            line(xo+15,yo-17,xo+15,yo-50);
+            //legs
+            line(xo,yo,xo+15,yo-17);
+            line(xo+15,yo-17,xo+28,yo);
+            //hand
+            line(xo+15,yo-45,xo+30,yo-30);
+            //sword
+            line(xo+20,yo-23,xo+110,yo-113);
+            line(xo+27,yo-48,xo+45,yo-30);
+            line(xo+45,yo-30,xo+105,yo-90);
+            line(xo+105,yo-90,xo+110,yo-113);
+            line(xo+27,yo-48,xo+87,yo-108);
+            line(xo+87,yo-108,xo+110,yo-113);
         }
     }
     void gerak()
@@ -88,13 +92,12 @@ class Wave
 private:
     int speed=5;
 public:
-    int xw,yw,cekWave,warna,isattacking=0;
+    int xw,yw,cekWave,isattacking=0;
     Wave()
     {
         xw=0;
         yw=0;
         cekWave=0;
-        warna=rand()%10;
     }
     int updateWave(int x,int y)
     {
@@ -118,22 +121,22 @@ public:
     }
     int controlWave(int x,int y)
     {
-        if(delayWave==0)
+        if(GetAsyncKeyState(VK_SPACE))
         {
-            if (GetAsyncKeyState(VK_SPACE))
+            if (isattacking==0)
             {
-                if(isattacking==0)
+                if(delayWave==0)
                 {
                     cekWave=1;
                     if(xw==0&&yw==0)
                     {
                         delayWave=10;
                     }
-                    isattacking=1;
                 }
+                isattacking=1;
             }
-            else isattacking=0;
         }
+        else isattacking=0;
         updateWave(x,y);
     }
 };
@@ -141,7 +144,7 @@ public:
 class Monster1 //score=2
 {
 public:
-    int xm1=getmaxx()-rand()%400,ym1=rand()%3,v;
+    int xm1=getmaxx()-rand()%300,ym1=rand()%3,v;
     void printm1()
     {
         if(ym1==0)ym1=getmaxy()/2+200;
@@ -191,16 +194,21 @@ public:
     {
         v=5+rand()%5;
         xm1=xm1-v;
-        if(xm1<-70)
+        if(xm1<=xo)
         {
-            xm1=getmaxx()-rand()%400;
+            darah=darah-2;
+            xm1=getmaxx()-rand()%300;
+            ym1=rand()%3;
+            if(ym1==0)ym1=getmaxy()/2+200;
+            else if(ym1==1)ym1=getmaxy()/2;
+            else if(ym1==2)ym1=getmaxy()/2-200;
         }
     }
     int hitbox(int xw, int yw)
     {
         if (xw>xm1-150&&xw<xm1+50&&yw>ym1-10&&yw<ym1+10)
         {
-            xm1=getmaxx()-rand()%400;
+            xm1=getmaxx()-rand()%300;
             ym1=rand()%3;
             if(ym1==0)ym1=getmaxy()/2+200;
             else if(ym1==1)ym1=getmaxy()/2;
@@ -215,7 +223,7 @@ public:
 class Monster2 //score=1
 {
 public:
-    int xm2=getmaxx()-rand()%400,ym2=rand()%3,v,xskor2,yskor2;
+    int xm2=getmaxx()-rand()%300,ym2=rand()%3,v;
     void printm2()
     {
         if(ym2==0)ym2=getmaxy()/2+200;
@@ -268,16 +276,21 @@ public:
     {
         v=1+rand()%5;
         xm2=xm2-v;
-        if(xm2<-70)
+        if(xm2<=xo)
         {
-            xm2=getmaxx()-rand()%400;
+            darah=darah-2;
+            xm2=getmaxx()-rand()%300;
+            ym2=rand()%3;
+            if(ym2==0)ym2=getmaxy()/2+200;
+            else if(ym2==1)ym2=getmaxy()/2;
+            else if(ym2==2)ym2=getmaxy()/2-200;
         }
     }
     int hitbox(int xw,int yw)
     {
-        if (xw>xm2-165&&xw<xm2+50&&yw>ym2-10&&yw<ym2+10)
+        if(xw>xm2-165&&xw<xm2+50&&yw>ym2-10&&yw<ym2+10)
         {
-            xm2=getmaxx()-rand()%400;
+            xm2=getmaxx()-rand()%300;
             ym2=rand()%3;
             if(ym2==0)ym2=getmaxy()/2+200;
             else if(ym2==1)ym2=getmaxy()/2;
@@ -294,24 +307,52 @@ class UserInterface
     public:
     void menu()
     {
-        settextstyle(3,HORIZ_DIR,40);
+        settextstyle(4,HORIZ_DIR,40);
         settextjustify(1,1);
-        outtextxy(getmaxx()/2,getmaxy()/2,"Welcome to");
-        settextstyle(8,HORIZ_DIR,40);
-        outtextxy(getmaxx()/2,getmaxy()/2+50,"Berzerk");
+        outtextxy(getmaxx()/2,getmaxy()/2-25,"Welcome to");
+        settextstyle(6,HORIZ_DIR,40);
+        setcolor(4);
+        outtextxy(getmaxx()/2,getmaxy()/2+30,"Berzerk");
+        //setcolor(4);
+        line(getmaxx()/2,100,getmaxx()/2,900);
+        //kanan->kiri
+        line(getmaxx()/2,900,getmaxx()/2+250,650);
+        line(getmaxx()/2+250,650,getmaxx()/2-220,300);
+        line(getmaxx()/2-220,300,getmaxx()/2-100,170);
+        //kiri->kanan
+        line(getmaxx()/2,900,getmaxx()/2-250,650);
+        line(getmaxx()/2-250,650,getmaxx()/2+220,300);
+        line(getmaxx()/2+220,300,getmaxx()/2+100,170);
+        setcolor(7);
     }
     void scoreboard()
     {
-        settextstyle(3,HORIZ_DIR,40);
-        settextjustify(0,1);
+        settextstyle(3,HORIZ_DIR,6);
+        settextjustify(1,1);
+        //score
+        outtextxy(getmaxx()-1250,getmaxy()-700,"Score:");
         sprintf(score_str,"%d",score);
-        outtextxy(100,50,score_str);
+        outtextxy(getmaxx()-1120,getmaxy()-700,score_str);
+        //hp
+        outtextxy(getmaxx()-1250,getmaxy()-50,"Health:");
+        setcolor(4);
+        sprintf(hp_str,"%d",darah);
+        outtextxy(getmaxx()-1120,getmaxy()-50,hp_str);
+        setcolor(7);
+    }
+    void Deathscreen()
+    {
+        settextjustify(1,1);
+        setcolor(4);
+        outtextxy(getmaxx()/2,getmaxy()/2-25,"YOU DIED");
+        setcolor(7);
+        outtextxy(getmaxx()/2,getmaxy()/2+25,"Better luck next time");
     }
 };
 
 int main()
 {
-    int page=0;
+    int page=0,blink=0;
     DWORD maxX = GetSystemMetrics(SM_CXSCREEN);
     DWORD maxY = GetSystemMetrics(SM_CYSCREEN);
     initwindow(maxX,maxY);
@@ -322,18 +363,29 @@ int main()
     UserInterface UI;
     while(1)
     {
+        setactivepage(page);
+        setvisualpage(1-page);
+        blink+=1;
         cleardevice();
         UI.menu();
+        if (blink<20){}
+        else if (blink<70)
+        {
+            settextjustify(1,1);
+            settextstyle(3,HORIZ_DIR,30);
+            outtextxy(getmaxx()/2,getmaxy()/2+100,"Press Any Key to Start");
+        }
+        else blink=0;
         if(kbhit())
         {
             break;
         }
-        delay(30);
+        delay(2);
+        page=1-page;
     }
 
     while(1)
     {
-
         setactivepage(page);
         setvisualpage(1-page);
         cleardevice();
@@ -342,49 +394,61 @@ int main()
         UI.scoreboard();
         for(int i=0;i<1000;i++)
         {
-            wave[i].controlWave(Guts.xo,Guts.yo);
+            wave[i].controlWave(xo,Guts.yo);
         }
         if(delayWave!=0)
         {
             delayWave=delayWave-1;
         }
-        for(int j=0;j<4;j++)
+        if(score<100)
         {
-            A[j].gerakm1();
-            A[j].printm1();
-            for(int i=0;i<1000;i++)
-            {
-                if (wave[i].cekWave == 1)
-                {
-                    if (A[j].hitbox(wave[i].xw, wave[i].yw))
-                    {
-                        wave[i].cekWave = 0;
-                        wave[i].xw=0;
-                        wave[i].yw=0;
-                    }
-                }
-            }
+            for(int j=0;j<4;j++)
+			{
+				A[j].gerakm1();
+				A[j].printm1();
+				for(int i=0;i<1000;i++)
+				{
+					if (wave[i].cekWave==1)
+					{
+						if (A[j].hitbox(wave[i].xw,wave[i].yw))
+						{
+							wave[i].cekWave = 0;
+							wave[i].xw=0;
+							wave[i].yw=0;
+						}
+					}
+				}
+			}
+			for(int k=0;k<9;k++)
+			{
+				B[k].gerakm2();
+				B[k].printm2();
+				for(int i=0;i<1000;i++)
+				{
+					if (wave[i].cekWave==1)
+					{
+						if (B[k].hitbox(wave[i].xw,wave[i].yw))
+						{
+							wave[i].cekWave = 0;
+							wave[i].xw=0;
+							wave[i].yw=0;
+						}
+					}
+				}
+			}
+			if(darah<=0) break;
         }
-        for(int k=0;k<9;k++)
+        else if(score>100)
         {
-            B[k].gerakm2();
-            B[k].printm2();
-            for(int i=0;i<1000;i++)
-            {
-                if (wave[i].cekWave == 1)
-                {
-                    if (B[k].hitbox(wave[i].xw, wave[i].yw))
-                    {
 
-                        wave[i].cekWave = 0;
-                        wave[i].xw=0;
-                        wave[i].yw=0;
-                    }
-                }
-            }
         }
         delay(1);
         page=1-page;
     }
 
+    while(1)
+    {
+        cleardevice();
+        UI.Deathscreen();
+    }
 }
